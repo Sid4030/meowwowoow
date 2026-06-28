@@ -10,7 +10,6 @@ import tamanna5 from "@/assets/tamanna-5.jpeg";
 import tamannaSmile from "@/assets/tamanna-smile.jpg";
 import tamanna1 from "@/assets/tamanna-1.jpeg";
 import tamanna10 from "@/assets/Tamanna10.jpeg"
-import tamanna2 from "@/assets/tamanna-2.jpeg";
 import tamanna3 from "@/assets/tamanna-3.jpeg";
 
 gsap.registerPlugin(ScrollTrigger);
