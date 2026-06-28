@@ -11,6 +11,7 @@ import tamannaSmile from "@/assets/tamanna-smile.jpg";
 import tamanna1 from "@/assets/tamanna-1.jpeg";
 import tamanna10 from "@/assets/Tamanna10.jpeg"
 import tamanna2 from "@/assets/tamanna-2.jpeg";
+import tamanna3 from "@/assets/tamanna-3.jpeg";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -390,7 +391,9 @@ function Index() {
       <section id="about" className="relative min-h-[100svh] w-full flex flex-col xl:flex-row items-stretch justify-start xl:justify-center overflow-hidden bg-[color:var(--obsidian)]">
         {/* Images side */}
         <div className="w-full xl:w-5/12 h-[50vh] xl:h-auto relative overflow-hidden shrink-0 self-start xl:self-stretch">
-           <img src="/src/assets/tamanna-3.jpeg" alt="Tamanna" className="absolute inset-0 w-full h-[150%] -top-[25%] object-cover object-[center_top] parallax-image" />
+           <div className="absolute inset-0 z-0 overflow-hidden">
+             <img src={tamanna3} alt="Tamanna" className="absolute inset-0 w-full h-[150%] -top-[25%] object-cover object-[center_top] parallax-image" />
+           </div>
            <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-[color:var(--obsidian)] via-[color:var(--obsidian)]/40 to-transparent opacity-100 z-10" />
         </div>
 
