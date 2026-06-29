@@ -258,7 +258,7 @@ function Index() {
             About Tamanna
           </div>
           <h2 className="font-display text-3xl sm:text-4xl xl:text-5xl leading-[1.05] text-[color:var(--obsidian)] mb-3 xl:mb-8">
-            <div>It's not just copy,</div>
+            <div>its not just a story,</div>
             <div>it's a <span className="italic text-[color:var(--cherry)]">journey.</span></div>
           </h2>
           <div className="space-y-2 sm:space-y-4 text-xs sm:text-sm leading-snug xl:leading-relaxed opacity-80 font-light relative">
