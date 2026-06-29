@@ -6,7 +6,11 @@ const EMAIL = "tamtamnini111@gmail.com";
 
 export function Footer() {
   return (
-    <section id="contact" className="bg-[color:var(--sand)] text-[color:var(--obsidian)] py-24 md:py-32 relative overflow-x-hidden flex flex-col justify-between min-h-[90svh]">
+    <section id="contact" className="bg-[color:var(--sand)] text-[color:var(--obsidian)] py-24 md:py-32 relative overflow-hidden flex flex-col justify-between min-h-[90svh]">
+      {/* Ambient Animated Background Blob */}
+      <div className="absolute top-[20%] left-[20%] w-[60vw] md:w-[600px] h-[60vw] md:h-[600px] bg-[color:var(--cherry)] rounded-full mix-blend-multiply filter blur-[100px] md:blur-[150px] opacity-20 animate-[spin_30s_linear_infinite]" style={{ borderRadius: "40% 60% 70% 30% / 40% 50% 60% 50%" }}></div>
+      <div className="absolute top-[40%] right-[10%] w-[50vw] md:w-[500px] h-[50vw] md:h-[500px] bg-[#d4c9b3] rounded-full mix-blend-multiply filter blur-[80px] md:blur-[120px] opacity-40 animate-[spin_40s_linear_infinite_reverse]" style={{ borderRadius: "60% 40% 30% 70% / 50% 30% 70% 40%" }}></div>
+
       {/* Decorative Top Marquee */}
       <div className="absolute top-0 left-0 w-full overflow-hidden border-b border-[color:var(--obsidian)]/10 py-4 opacity-50">
         <div className="flex whitespace-nowrap font-mono text-[10px] uppercase tracking-[0.3em] text-[color:var(--obsidian)] animate-[marquee_20s_linear_infinite]">

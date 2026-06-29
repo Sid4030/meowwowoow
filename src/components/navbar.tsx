@@ -86,32 +86,16 @@ export function Navbar() {
       </header>
 
       {/* MOBILE WIDE FLOATING PILL NAVBAR */}
-      <div className="md:hidden fixed top-6 inset-x-0 z-[100] flex justify-center pointer-events-none px-4">
+      <div className="md:hidden fixed top-6 inset-x-0 z-[100] flex justify-center px-4">
+        
+        {/* Layer 1: Frosted Glass Pill (Exactly like reference image) */}
         <div 
-          className="dynamic-island w-full bg-[#1a1a1a]/80 backdrop-blur-2xl border border-white/10 text-[color:var(--pearl)] flex flex-col items-center justify-start overflow-hidden pointer-events-auto shadow-[0_8px_30px_rgba(0,0,0,0.5)] relative"
+          className="dynamic-island w-full bg-white/40 backdrop-blur-3xl border border-white/40 flex flex-col items-center justify-start overflow-hidden pointer-events-auto shadow-sm relative"
           style={{ height: "56px", borderRadius: "100px" }}
         >
-          {/* Closed State Header - Wide Pill Layout */}
-          <div 
-            className="island-header absolute inset-0 flex items-center justify-between px-6 cursor-pointer"
-            onClick={() => !isIslandOpen && setIsIslandOpen(true)}
-          >
-            <Link 
-              to="/" 
-              className="font-display text-xl tracking-tight z-10"
-              onClick={(e) => e.stopPropagation()}
-            >
-              Tamanna
-            </Link>
-            <div className="flex flex-col gap-1.5 opacity-80 z-10 p-2 -mr-2">
-              <span className="w-5 h-[1.5px] bg-white" />
-              <span className="w-5 h-[1.5px] bg-white" />
-            </div>
-          </div>
-          
           {/* Opened State Links */}
-          <div className="island-links opacity-0 pointer-events-none w-full h-full flex flex-col p-6 px-8 relative bg-[#1a1a1a]/95">
-            <div className="flex justify-between items-center mb-8 border-b border-white/10 pb-4">
+          <div className="island-links opacity-0 pointer-events-none w-full h-full flex flex-col p-6 px-8 relative bg-white/95 text-black">
+            <div className="flex justify-between items-center mb-8 border-b border-black/10 pb-4">
               <Link 
                 to="/" 
                 className="font-display text-xl tracking-tight"
@@ -120,24 +104,42 @@ export function Navbar() {
                 Tamanna
               </Link>
               <button 
-                className="flex flex-col gap-1.5 opacity-60 hover:opacity-100 p-2 -mr-2 relative w-6 h-6 justify-center items-center"
+                className="flex flex-col gap-1.5 opacity-80 hover:opacity-100 p-2 -mr-2 relative w-6 h-6 justify-center items-center text-black"
                 onClick={() => setIsIslandOpen(false)}
               >
-                <span className="w-5 h-[1.5px] bg-white absolute rotate-45" />
-                <span className="w-5 h-[1.5px] bg-white absolute -rotate-45" />
+                <span className="w-5 h-[1.5px] bg-black absolute rotate-45" />
+                <span className="w-5 h-[1.5px] bg-black absolute -rotate-45" />
               </button>
             </div>
             
-            <nav className="flex flex-col gap-6 font-display text-4xl tracking-tight mt-2">
+            <nav className="flex flex-col gap-6 font-display text-4xl tracking-tight mt-2 text-black">
               <Link to="/marketing" className="hover:text-[color:var(--cherry)] transition-colors" onClick={() => setIsIslandOpen(false)}>Marketing</Link>
               <Link to="/content" className="hover:text-[color:var(--cherry)] transition-colors" onClick={() => setIsIslandOpen(false)}>Content</Link>
               <Link to="/writing" className="hover:text-[color:var(--cherry)] transition-colors" onClick={() => setIsIslandOpen(false)}>Writing</Link>
               <Link to="/community" className="hover:text-[color:var(--cherry)] transition-colors" onClick={() => setIsIslandOpen(false)}>Community</Link>
             </nav>
-            <div className="mt-auto flex justify-between font-mono text-[9px] uppercase tracking-[0.2em] font-bold opacity-60 pt-4 border-t border-white/10">
+            <div className="mt-auto flex justify-between font-mono text-[9px] uppercase tracking-[0.2em] font-bold opacity-60 pt-4 border-t border-black/10">
               <a href="#contact" onClick={(e) => { e.stopPropagation(); setIsIslandOpen(false); }}>Contact</a>
               <a href={INSTAGRAM} target="_blank" rel="noopener noreferrer">Instagram ↗</a>
             </div>
+          </div>
+        </div>
+
+        {/* Layer 2: The Text Header (Strictly Black now, no blend mode) */}
+        <div 
+          className="island-header absolute top-0 inset-x-4 h-[56px] flex items-center justify-between px-6 cursor-pointer text-black z-10 pointer-events-auto"
+          onClick={() => !isIslandOpen && setIsIslandOpen(true)}
+        >
+          <Link 
+            to="/" 
+            className="font-display text-xl tracking-tight z-10"
+            onClick={(e) => e.stopPropagation()}
+          >
+            Tamanna
+          </Link>
+          <div className="flex flex-col gap-1.5 opacity-80 z-10 p-2 -mr-2">
+            <span className="w-5 h-[1.5px] bg-black" />
+            <span className="w-5 h-[1.5px] bg-black" />
           </div>
         </div>
       </div>

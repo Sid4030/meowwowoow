@@ -13,4 +13,8 @@ export default defineConfig({
     nitro({ preset: 'vercel' }),
     react()
   ],
+  server: {
+    port: 5173,
+    strictPort: true,
+  }
 });

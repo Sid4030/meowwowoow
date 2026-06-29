@@ -54,8 +54,18 @@ function ContentPage() {
       >
         <div className="grid md:grid-cols-12 gap-12 md:gap-24 items-center fade-up mt-12">
           
-          <div className="md:col-span-6 space-y-8 md:order-1">
-            <h2 className="font-display text-4xl md:text-6xl leading-[1.05] tracking-tight text-[color:var(--obsidian)]">
+          <div className="md:col-span-6 space-y-8 md:order-1 relative">
+            
+            {/* Magazine decorative animated icon */}
+            <div className="absolute -top-16 -left-12 md:-left-16 w-24 h-24 opacity-10 text-[color:var(--obsidian)] animate-[spin_20s_linear_infinite]">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="w-full h-full">
+                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
+                <path d="M8 7h6" />
+                <path d="M8 11h8" />
+              </svg>
+            </div>
+
+            <h2 className="font-display text-4xl md:text-6xl leading-[1.05] tracking-tight text-[color:var(--obsidian)] relative z-10">
               Visit <span className="italic text-[color:var(--cherry)]">@tam_anna_k</span> for the full body of work.
             </h2>
             <p className="text-[color:var(--obsidian)]/70 leading-relaxed font-light text-base md:text-xl">

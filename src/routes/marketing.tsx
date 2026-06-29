@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import geospaceReel from "@/assets/insightio-reel.mp4"; 
+import scgjCertificate from "@/assets/Certificate.jpeg";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -156,6 +157,30 @@ function MarketingPage() {
                 engagement metrics. Focused on showcasing the architectural process and final 
                 spaces through dynamic, trend-aware storytelling.
               </p>
+            </div>
+          </section>
+
+          <section className="grid md:grid-cols-12 gap-8 items-start fade-up pt-12 md:pt-24 border-t border-[color:var(--obsidian)]/10">
+            <div className="md:col-span-5 space-y-4">
+              <span className="font-mono text-xs text-[color:var(--cherry)] flex items-center gap-3">
+                <span className="w-2 h-2 rounded-full bg-[color:var(--cherry)]" />
+                03 / Marketing Intern
+              </span>
+              <h2 className="font-display text-4xl md:text-5xl leading-[1.05] tracking-tight">
+                Skill Council for Green Jobs.
+              </h2>
+              <p className="text-[color:var(--obsidian)]/90 leading-relaxed font-medium text-lg md:text-xl">
+                Worked as a marketing intern (retainer) at SCGJ - Skill Council for Green Jobs for 3 months, contributing to sustainability-focused marketing initiatives and campaigns.
+              </p>
+            </div>
+            <div className="md:col-span-7 flex justify-center relative group">
+               <div className="w-full max-w-[600px] bg-white p-4 md:p-6 rounded-[24px] shadow-2xl relative overflow-hidden transform group-hover:-translate-y-2 transition-transform duration-500">
+                 <img 
+                   src={scgjCertificate} 
+                   alt="SCGJ Marketing Internship Certificate" 
+                   className="w-full h-auto object-contain rounded-[8px]" 
+                 />
+               </div>
             </div>
           </section>
         </div>
