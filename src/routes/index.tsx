@@ -225,7 +225,7 @@ function Index() {
       </section>
 
       {/* ZOOM-THROUGH PERSPECTIVE SECTION (Inherently Responsive) */}
-      <section className="zoom-section relative h-[100svh] bg-transparent flex flex-col xl:flex-row items-center justify-center gap-6 xl:gap-24 overflow-hidden px-6 xl:px-24">
+      <section className="zoom-section relative h-[100svh] bg-transparent flex flex-col xl:flex-row items-center justify-center gap-4 xl:gap-24 overflow-hidden px-4 xl:px-24">
         
         {/* Decorative background elements for laptop view to fill empty sides */}
         <div className="hidden xl:block absolute left-[-5vw] top-1/2 -translate-y-1/2 opacity-20 pointer-events-none -z-10 rotate-12">
@@ -243,25 +243,25 @@ function Index() {
           </svg>
         </div>
 
-        {/* The Native CSS Placeholder - dynamically scales down on short mobile screens */}
-        <div className="zoom-image-placeholder relative w-full max-w-[280px] sm:max-w-sm xl:max-w-md max-h-[40svh] xl:max-h-none aspect-[4/5] opacity-0 pointer-events-none mt-[12vh] xl:mt-0 flex-shrink-0"></div>
+        {/* The Native CSS Placeholder - dynamically scales down aggressively on short mobile screens */}
+        <div className="zoom-image-placeholder relative w-full max-w-[220px] sm:max-w-sm xl:max-w-md max-h-[35svh] xl:max-h-none aspect-[4/5] opacity-0 pointer-events-none flex-shrink-0"></div>
 
         {/* The text block - Native CSS positioning next to or below the placeholder */}
         <div className="zoom-reveal-block w-full max-w-md opacity-0 z-20 text-center xl:text-left mx-auto xl:mx-0">
           {/* Decorative Watermark */}
-          <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/4 md:translate-x-1/2 font-display text-[120px] xl:text-[200px] text-[color:var(--obsidian)]/5 leading-none select-none -z-10">
+          <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/4 md:translate-x-1/2 font-display text-[100px] xl:text-[200px] text-[color:var(--obsidian)]/5 leading-none select-none -z-10">
             T.
           </div>
 
-          <div className="font-mono text-[10px] uppercase tracking-[0.25em] text-[color:var(--cherry)] mb-3 xl:mb-6 flex items-center justify-center xl:justify-start gap-3">
-            <span className="w-2 h-2 rounded-full bg-[color:var(--cherry)]" />
+          <div className="font-mono text-[9px] xl:text-[10px] uppercase tracking-[0.25em] text-[color:var(--cherry)] mb-2 xl:mb-6 flex items-center justify-center xl:justify-start gap-3">
+            <span className="w-1.5 h-1.5 rounded-full bg-[color:var(--cherry)]" />
             About Tamanna
           </div>
-          <h2 className="font-display text-3xl sm:text-4xl xl:text-5xl leading-[1.05] text-[color:var(--obsidian)] mb-3 xl:mb-8">
-            <div>its not just a story,</div>
+          <h2 className="font-display text-2xl sm:text-4xl xl:text-5xl leading-[1.05] text-[color:var(--obsidian)] mb-2 xl:mb-8">
+            <div>It's not just a Story,</div>
             <div>it's a <span className="italic text-[color:var(--cherry)]">journey.</span></div>
           </h2>
-          <div className="space-y-2 sm:space-y-4 text-xs sm:text-sm leading-snug xl:leading-relaxed opacity-80 font-light relative">
+          <div className="space-y-1.5 sm:space-y-4 text-[11px] sm:text-sm leading-[1.4] xl:leading-relaxed opacity-80 font-light relative px-2 xl:px-0">
             <div className="absolute -left-6 top-0 bottom-0 w-px bg-gradient-to-b from-[color:var(--cherry)] to-transparent opacity-30 hidden md:block"></div>
             <p>
               My name is Tamanna Khan, I am based in Delhi NCR. I freshly graduated from Lady Irwin College, University of Delhi with a Bachelors in Science in Home Science (major) and Psychology (minor).
