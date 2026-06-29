@@ -72,9 +72,16 @@ export function Footer() {
          <img src={tamanna5} alt="Tamanna" className="w-full h-full object-cover object-[center_top]" />
       </div>
 
-      <div className="mx-auto max-w-[1400px] px-6 md:px-12 w-full absolute bottom-8 inset-x-0 pt-8 flex justify-between font-mono text-[9px] uppercase tracking-[0.3em] opacity-60 z-20">
-        <span>© 2026</span>
-        <span>Designed with care</span>
+      <div className="mx-auto max-w-[1400px] px-6 md:px-12 w-full absolute bottom-8 inset-x-0 pt-8 flex flex-col md:flex-row gap-4 items-center justify-between font-mono text-[10px] uppercase tracking-[0.2em] opacity-80 z-20">
+        <span>© 2026 Tamanna Khan</span>
+        <a 
+          href="https://www.linkedin.com/in/siddhant-choudhary-635244224/" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="hover:text-[color:var(--cherry)] transition-colors duration-300 underline underline-offset-4 decoration-[color:var(--cherry)]/30 hover:decoration-[color:var(--cherry)]"
+        >
+          Designed by Siddhant Choudhary
+        </a>
       </div>
     </section>
   );
