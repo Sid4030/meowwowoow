@@ -1,12 +1,36 @@
 import tamanna5 from "@/assets/tamanna-5.jpeg";
+import { useRef } from "react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { Draggable } from "gsap/Draggable";
+
+gsap.registerPlugin(Draggable);
 
 const INSTAGRAM = "https://www.instagram.com/tam_anna_k?igsh=dzhzczFpd2J1Z3J6";
 const LINKEDIN = "https://www.linkedin.com/in/tamanna-khan-84563b293";
 const EMAIL = "tamtamnini111@gmail.com";
 
 export function Footer() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(() => {
+    if (imageRef.current && containerRef.current) {
+      Draggable.create(imageRef.current, {
+        type: "x,y",
+        bounds: containerRef.current,
+        onPress: function() {
+          gsap.to(this.target, { scale: 1.05, rotate: 0, zIndex: 50, duration: 0.3, ease: "power2.out" });
+        },
+        onRelease: function() {
+          gsap.to(this.target, { scale: 1, rotate: -6, zIndex: 30, duration: 0.5, ease: "bounce.out" });
+        }
+      });
+    }
+  }, { scope: containerRef });
+
   return (
-    <section id="contact" className="bg-[color:var(--sand)] text-[color:var(--obsidian)] py-24 md:py-32 relative overflow-hidden flex flex-col justify-between min-h-[90svh]">
+    <section id="contact" ref={containerRef} className="bg-[color:var(--sand)] text-[color:var(--obsidian)] py-24 md:py-32 relative overflow-hidden flex flex-col justify-between min-h-[90svh]">
       {/* Ambient Animated Background Blob */}
       <div className="absolute top-[20%] left-[20%] w-[60vw] md:w-[600px] h-[60vw] md:h-[600px] bg-[color:var(--cherry)] rounded-full mix-blend-multiply filter blur-[100px] md:blur-[150px] opacity-20 animate-[spin_30s_linear_infinite]" style={{ borderRadius: "40% 60% 70% 30% / 40% 50% 60% 50%" }}></div>
       <div className="absolute top-[40%] right-[10%] w-[50vw] md:w-[500px] h-[50vw] md:h-[500px] bg-[#d4c9b3] rounded-full mix-blend-multiply filter blur-[80px] md:blur-[120px] opacity-40 animate-[spin_40s_linear_infinite_reverse]" style={{ borderRadius: "60% 40% 30% 70% / 50% 30% 70% 40%" }}></div>
@@ -68,8 +92,11 @@ export function Footer() {
       </div>
 
       {/* Overlapping Image floating over the entire footer */}
-      <div className="absolute left-1/2 -translate-x-1/2 bottom-[25%] lg:left-[30%] lg:translate-x-0 lg:bottom-[15%] lg:top-auto w-[45vw] max-w-[220px] lg:w-[25vw] lg:max-w-[300px] aspect-[3/4] overflow-hidden rounded-[24px] lg:rounded-[32px] rotate-[-6deg] shadow-2xl z-30 transition-transform duration-500 hover:rotate-0 hover:scale-105 border-[6px] border-[color:var(--sand)]">
-         <img src={tamanna5} alt="Tamanna" className="w-full h-full object-cover object-[center_top]" />
+      <div 
+        ref={imageRef}
+        className="absolute left-[15%] bottom-[25%] lg:left-[30%] lg:bottom-[15%] w-[50vw] max-w-[220px] lg:w-[25vw] lg:max-w-[300px] aspect-[3/4] overflow-hidden rounded-[24px] lg:rounded-[32px] rotate-[-6deg] shadow-2xl z-30 border-[6px] border-[color:var(--sand)] cursor-grab active:cursor-grabbing"
+      >
+         <img src={tamanna5} alt="Tamanna" className="w-full h-full object-cover object-[center_top] pointer-events-none select-none" draggable={false} />
       </div>
 
       <div className="mx-auto max-w-[1400px] px-6 md:px-12 w-full absolute bottom-8 inset-x-0 pt-8 flex flex-col md:flex-row gap-4 items-center justify-between font-mono text-[10px] uppercase tracking-[0.2em] opacity-80 z-20">

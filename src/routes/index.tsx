@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useRef, useState, useEffect } from "react";
+import { useLenis } from "lenis/react";
+import { useRef, useState, useEffect, useLayoutEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -37,6 +38,35 @@ const EMAIL = "tamtamnini111@gmail.com";
 
 function Index() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [showSplash, setShowSplash] = useState(() => {
+    return typeof sessionStorage !== 'undefined' ? !sessionStorage.getItem("hasSeenSplash") : true;
+  });
+  const [justFinishedSplash, setJustFinishedSplash] = useState(false);
+  const lenis = useLenis();
+
+  useEffect(() => {
+    if (showSplash) {
+      lenis?.stop();
+      document.body.style.overflow = 'hidden';
+      const preventScroll = (e: Event) => e.preventDefault();
+      window.addEventListener('wheel', preventScroll, { passive: false });
+      window.addEventListener('touchmove', preventScroll, { passive: false });
+      return () => {
+        lenis?.start();
+        document.body.style.overflow = '';
+        window.removeEventListener('wheel', preventScroll);
+        window.removeEventListener('touchmove', preventScroll);
+      };
+    } else {
+      lenis?.start();
+    }
+  }, [showSplash, lenis]);
+
+  const handleSplashComplete = () => {
+    sessionStorage.setItem("hasSeenSplash", "true");
+    setJustFinishedSplash(true);
+    setShowSplash(false);
+  };
   
   const heroImages = [tamannaH1, tamannaH2, tamanna5, tamannaH3];
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -48,23 +78,103 @@ function Index() {
     return () => clearInterval(timer);
   }, [heroImages.length]);
 
+  const counterRef = useRef<HTMLSpanElement>(null);
+
   useGSAP(() => {
-    // 1. Hero Text Reveal
-    gsap.from(".hero-text", {
-      y: "100%",
-      opacity: 0,
-      duration: 1.5,
-      ease: "power4.out",
-      stagger: 0.1,
-      delay: 0.2
-    });
+    if (showSplash) {
+      // 1. Setup Counter
+      const counterObj = { val: 0 };
+      gsap.to(counterObj, {
+        val: 100,
+        duration: 2.2,
+        ease: "power3.inOut",
+        onUpdate: () => {
+          if (counterRef.current) {
+            counterRef.current.innerText = Math.round(counterObj.val).toString();
+          }
+        }
+      });
+      
+      gsap.to(".splash-deco", { rotate: 360, duration: 25, repeat: -1, ease: "none" });
+
+      // 2. Calculate coordinates and Set Initial State
+      const tamanna = document.querySelector(".hero-tamanna");
+      const khan = document.querySelector(".hero-khan");
+      
+      if (tamanna && khan) {
+        const tRect = tamanna.getBoundingClientRect();
+        const kRect = khan.getBoundingClientRect();
+        
+        const centerX = window.innerWidth / 2;
+        const centerY = window.innerHeight / 2;
+        
+        // Target splash center positions (staggered slightly for editorial look)
+        const tTargetX = centerX - window.innerWidth * 0.02;
+        const tTargetY = centerY - window.innerHeight * 0.05;
+        const kTargetX = centerX + window.innerWidth * 0.08;
+        const kTargetY = centerY + window.innerHeight * 0.02;
+
+        const tDx = tTargetX - (tRect.left + tRect.width / 2);
+        const tDy = tTargetY - (tRect.top + tRect.height / 2);
+        const kDx = kTargetX - (kRect.left + kRect.width / 2);
+        const kDy = kTargetY - (kRect.top + kRect.height / 2);
+
+        // Set initial transform for splash
+        gsap.set(tamanna, { x: tDx, y: tDy, scale: 1.2, color: "var(--obsidian)" });
+        gsap.set(khan, { x: kDx, y: kDy, scale: 1.2, color: "var(--cherry)" });
+
+        // 3. Intro entrance animation (letter by letter like before)
+        const tl = gsap.timeline();
+        tl.from(".splash-char", {
+          y: "120%",
+          opacity: 0,
+          rotate: 15,
+          duration: 1.2,
+          stagger: 0.05,
+          ease: "back.out(1.5)"
+        });
+
+        // 4. Wait for counter
+        tl.to({}, { duration: 1.0 });
+
+        // 5. Fly to native hero position
+        tl.to(tamanna, {
+          x: 0,
+          y: 0,
+          scale: 1,
+          color: "var(--cherry)",
+          duration: 1.5,
+          ease: "power4.inOut"
+        }, "fly");
+
+        tl.to(khan, {
+          x: 0,
+          y: 0,
+          scale: 1,
+          color: "var(--pearl)",
+          duration: 1.5,
+          onComplete: () => {
+            document.body.style.overflow = '';
+            sessionStorage.setItem("hasSeenSplash", "true");
+            setJustFinishedSplash(true);
+            setShowSplash(false);
+          }
+        }, "fly");
+      }
+    }
 
     // Fix GSAP ScrollTrigger sync issues on mobile by refreshing after a delay
     setTimeout(() => {
       ScrollTrigger.refresh();
     }, 500);
     window.addEventListener("load", () => ScrollTrigger.refresh());
+  }, { scope: containerRef, dependencies: [showSplash, justFinishedSplash] });
 
+
+  // -----------------------------------------------------
+  // SCROLL TRIGGER ANIMATIONS (Runs once, doesn't depend on showSplash)
+  // -----------------------------------------------------
+  useGSAP(() => {
     gsap.fromTo(".topo-line", 
       { strokeDasharray: 2000, strokeDashoffset: 2000 },
       { strokeDashoffset: 0, duration: 3, ease: "power2.out", stagger: 0.1 }
@@ -98,15 +208,23 @@ function Index() {
     };
 
     // Animate image natively moving from fullscreen to its flexbox placeholder position
-    zoomTl.to(".zoom-image-wrapper", {
-      width: () => getTargetRect().width,
-      height: () => getTargetRect().height,
-      x: () => getTargetRect().x,
-      y: () => getTargetRect().y,
-      borderRadius: "24px",
-      ease: "power2.inOut",
-      duration: 1.5
-    }, 0);
+    zoomTl.fromTo(".zoom-image-wrapper", 
+      {
+        width: "100vw",
+        height: "100vh",
+        x: 0,
+        y: 0,
+        borderRadius: "0px"
+      },
+      {
+        width: () => getTargetRect().width,
+        height: () => getTargetRect().height,
+        x: () => getTargetRect().x,
+        y: () => getTargetRect().y,
+        borderRadius: "24px",
+        ease: "power2.inOut",
+        duration: 1.5
+      }, 0);
 
     // Pop up the decorative flowers
     zoomTl.to(".flower-popup", {
@@ -172,23 +290,39 @@ function Index() {
         }
       });
     }
-
-    // Cleanup
-    return () => {
-      ScrollTrigger.getAll().forEach(t => t.kill());
-    };
   }, { scope: containerRef });
 
   return (
     <>
     <div ref={containerRef} className="bg-[#f2efe9] text-[color:var(--obsidian)] selection:bg-[color:var(--cherry)] selection:text-[color:var(--pearl)] overflow-x-hidden">
       
-      <Navbar />
+      <div className={`fixed top-0 left-0 w-full z-[105] transition-all duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] ${showSplash ? 'opacity-0 -translate-y-[100%] pointer-events-none' : 'opacity-100 translate-y-0'}`}>
+        <Navbar />
+      </div>
 
       {/* EXTRAORDINARY HERO SECTION */}
-      <section className="relative min-h-[100svh] flex flex-col justify-end bg-[color:var(--obsidian)] overflow-hidden pt-32 pb-16 px-6 md:px-12">
+      <section className={`relative min-h-[100svh] flex flex-col justify-end overflow-hidden pt-32 pb-16 px-6 md:px-12 transition-colors duration-1000 ease-in-out ${showSplash ? 'bg-[color:var(--sand)] z-[101]' : 'bg-[color:var(--obsidian)] z-10'}`}>
+        
+        {/* Splash Decorative Elements */}
+        <div className={`absolute inset-0 pointer-events-none transition-opacity duration-1000 ${showSplash ? 'opacity-100' : 'opacity-0'}`}>
+          <svg className="splash-deco absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120vw] sm:w-[80vw] md:w-[60vw] text-[color:var(--cherry)] opacity-[0.03]" viewBox="0 0 100 100" fill="currentColor">
+             {Array.from({length: 12}).map((_, i) => (
+                <path key={i} d="M47 25 Q50 5 53 25 Q50 40 47 25" fill="currentColor" transform={`rotate(${i * 30} 50 50)`} />
+             ))}
+             <circle cx="50" cy="50" r="15" fill="currentColor" />
+          </svg>
+          <div className="absolute inset-0 opacity-[0.02]" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.8%22 numOctaves=%224%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }}></div>
+          <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-12 z-10">
+            <div className="flex items-end justify-end border-b border-[color:var(--obsidian)]/20 pb-4 w-full text-[color:var(--obsidian)]">
+              <div className="font-display text-4xl md:text-5xl tabular-nums leading-none">
+                <span ref={counterRef}>0</span><span className="text-xl md:text-2xl text-[color:var(--cherry)]">%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Slideshow Background */}
-        <div className="absolute inset-0 w-full h-full z-0 opacity-40">
+        <div className={`absolute inset-0 w-full h-full z-0 transition-opacity duration-1000 ease-in-out ${showSplash ? 'opacity-0' : 'opacity-40'}`}>
            {heroImages.map((src, idx) => (
              <img 
                key={idx}
@@ -200,17 +334,29 @@ function Index() {
            <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-[color:var(--obsidian)] via-[color:var(--obsidian)]/50 to-transparent"></div>
         </div>
 
-        <div className="relative z-10 grid md:grid-cols-12 gap-8 items-end w-full h-full flex-grow">
+        <div className="relative z-20 grid md:grid-cols-12 gap-8 items-end w-full h-full flex-grow">
           <div className="md:col-span-12 flex flex-col justify-end">
             <h1 className="font-display text-[18vw] md:text-[16vw] leading-[0.75] tracking-tighter uppercase text-[color:var(--cherry)] max-w-full">
               {/* Sized down slightly so the last 'A' is not clipped or overflowing horizontally */}
-              <div className="pb-2 md:pb-4 pr-4 md:pr-12"><div className="hero-text inline-block">Tamanna</div></div>
+              <div className="pb-2 md:pb-4 pr-4 md:pr-12">
+                <div className="hero-text hero-tamanna inline-flex origin-center will-change-transform overflow-hidden">
+                  {"Tamanna".split("").map((char, i) => (
+                    <span key={`t-${i}`} className="splash-char inline-block origin-bottom-left will-change-transform pb-2">{char}</span>
+                  ))}
+                </div>
+              </div>
             </h1>
             <div className="flex flex-col md:flex-row md:items-end justify-between mt-4 md:mt-8 gap-8">
               <h2 className="font-display text-[18vw] md:text-[12vw] leading-[0.75] tracking-tighter italic text-[color:var(--pearl)]">
-                <div className="pb-4 pr-8"><div className="hero-text inline-block">Khan.</div></div>
+                <div className="pb-4 pr-8">
+                  <div className="hero-text hero-khan inline-flex origin-center will-change-transform overflow-hidden">
+                    {"Khan.".split("").map((char, i) => (
+                      <span key={`k-${i}`} className="splash-char inline-block origin-bottom-left will-change-transform pb-2">{char}</span>
+                    ))}
+                  </div>
+                </div>
               </h2>
-              <div className="max-w-xs space-y-6 pb-4">
+              <div className={`max-w-xs space-y-6 pb-4 transition-opacity duration-1000 ${showSplash ? 'opacity-0' : 'opacity-100'}`}>
                 <p className="text-base md:text-lg font-light leading-relaxed fade-up text-[color:var(--pearl)] drop-shadow-md">
                   Content & marketing associate building brand worlds through words, visuals, and quiet strategy.
                 </p>
@@ -373,7 +519,7 @@ function Index() {
               n="05" 
               to="#contact" 
               title="Let's Talk" 
-              body="Ready to build a voice system that works? Reach out and let's create something extraordinary together." 
+              body="Reach out and let's create something extraordinary together." 
               img={tamanna10}
               className="w-full h-full rounded-[40px]"
             />
