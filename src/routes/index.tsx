@@ -38,22 +38,34 @@ const EMAIL = "tamtamnini111@gmail.com";
 
 function Index() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [showSplash, setShowSplash] = useState(() => {
-    return typeof sessionStorage !== 'undefined' ? !sessionStorage.getItem("hasSeenSplash") : true;
-  });
+  const [mounted, setMounted] = useState(false);
+  const [showSplash, setShowSplash] = useState(true); // Always true initially to prevent flash of content
   const [justFinishedSplash, setJustFinishedSplash] = useState(false);
   const lenis = useLenis();
+
+  useLayoutEffect(() => {
+    setMounted(true);
+    try {
+      if (typeof sessionStorage !== 'undefined' && sessionStorage.getItem("hasSeenSplash")) {
+        setShowSplash(false);
+      }
+    } catch (e) {
+      // Ignore
+    }
+  }, []);
 
   useEffect(() => {
     if (showSplash) {
       lenis?.stop();
       document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden'; // For iOS Safari
       const preventScroll = (e: Event) => e.preventDefault();
       window.addEventListener('wheel', preventScroll, { passive: false });
       window.addEventListener('touchmove', preventScroll, { passive: false });
       return () => {
         lenis?.start();
         document.body.style.overflow = '';
+        document.documentElement.style.overflow = '';
         window.removeEventListener('wheel', preventScroll);
         window.removeEventListener('touchmove', preventScroll);
       };
@@ -63,7 +75,9 @@ function Index() {
   }, [showSplash, lenis]);
 
   const handleSplashComplete = () => {
-    sessionStorage.setItem("hasSeenSplash", "true");
+    try {
+      sessionStorage.setItem("hasSeenSplash", "true");
+    } catch (e) {} // Ignore if blocked
     setJustFinishedSplash(true);
     setShowSplash(false);
   };
@@ -81,7 +95,7 @@ function Index() {
   const counterRef = useRef<HTMLSpanElement>(null);
 
   useGSAP(() => {
-    if (showSplash) {
+    if (mounted && showSplash) {
       // 1. Setup Counter
       const counterObj = { val: 0 };
       gsap.to(counterObj, {
@@ -155,11 +169,17 @@ function Index() {
           duration: 1.5,
           onComplete: () => {
             document.body.style.overflow = '';
-            sessionStorage.setItem("hasSeenSplash", "true");
+            document.documentElement.style.overflow = '';
+            try {
+              sessionStorage.setItem("hasSeenSplash", "true");
+            } catch (e) {}
             setJustFinishedSplash(true);
             setShowSplash(false);
           }
         }, "fly");
+      } else {
+        // Fallback if elements not found
+        setShowSplash(false);
       }
     }
 
@@ -168,7 +188,7 @@ function Index() {
       ScrollTrigger.refresh();
     }, 500);
     window.addEventListener("load", () => ScrollTrigger.refresh());
-  }, { scope: containerRef, dependencies: [showSplash, justFinishedSplash] });
+  }, { scope: containerRef, dependencies: [showSplash, mounted, justFinishedSplash] });
 
 
   // -----------------------------------------------------
@@ -294,17 +314,15 @@ function Index() {
 
   return (
     <>
-    <div ref={containerRef} className="bg-[#f2efe9] text-[color:var(--obsidian)] selection:bg-[color:var(--cherry)] selection:text-[color:var(--pearl)] overflow-x-hidden">
+    <div ref={containerRef} suppressHydrationWarning className="bg-[#f2efe9] text-[color:var(--obsidian)] selection:bg-[color:var(--cherry)] selection:text-[color:var(--pearl)] overflow-x-hidden">
       
-      <div className={`fixed top-0 left-0 w-full z-[105] transition-all duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] ${showSplash ? 'opacity-0 -translate-y-[100%] pointer-events-none' : 'opacity-100 translate-y-0'}`}>
-        <Navbar />
-      </div>
+      <Navbar showSplash={showSplash} />
 
       {/* EXTRAORDINARY HERO SECTION */}
-      <section className={`relative min-h-[100svh] flex flex-col justify-end overflow-hidden pt-32 pb-16 px-6 md:px-12 transition-colors duration-1000 ease-in-out ${showSplash ? 'bg-[color:var(--sand)] z-[101]' : 'bg-[color:var(--obsidian)] z-10'}`}>
+      <section suppressHydrationWarning className={`relative min-h-[100svh] flex flex-col justify-end overflow-hidden pt-32 pb-16 px-6 md:px-12 transition-colors duration-1000 ease-in-out ${showSplash ? 'bg-[color:var(--sand)] z-[101]' : 'bg-[color:var(--obsidian)] z-10'}`}>
         
         {/* Splash Decorative Elements */}
-        <div className={`absolute inset-0 pointer-events-none transition-opacity duration-1000 ${showSplash ? 'opacity-100' : 'opacity-0'}`}>
+        <div suppressHydrationWarning className={`absolute inset-0 pointer-events-none transition-opacity duration-1000 ${showSplash ? 'opacity-100' : 'opacity-0'}`}>
           <svg className="splash-deco absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120vw] sm:w-[80vw] md:w-[60vw] text-[color:var(--cherry)] opacity-[0.03]" viewBox="0 0 100 100" fill="currentColor">
              {Array.from({length: 12}).map((_, i) => (
                 <path key={i} d="M47 25 Q50 5 53 25 Q50 40 47 25" fill="currentColor" transform={`rotate(${i * 30} 50 50)`} />
@@ -322,7 +340,7 @@ function Index() {
         </div>
 
         {/* Slideshow Background */}
-        <div className={`absolute inset-0 w-full h-full z-0 transition-opacity duration-1000 ease-in-out ${showSplash ? 'opacity-0' : 'opacity-40'}`}>
+        <div suppressHydrationWarning className={`absolute inset-0 w-full h-full z-0 transition-opacity duration-1000 ease-in-out ${showSplash ? 'opacity-0' : 'opacity-40'}`}>
            {heroImages.map((src, idx) => (
              <img 
                key={idx}
@@ -356,11 +374,18 @@ function Index() {
                   </div>
                 </div>
               </h2>
-              <div className={`max-w-xs space-y-6 pb-4 transition-opacity duration-1000 ${showSplash ? 'opacity-0' : 'opacity-100'}`}>
-                <p className="text-base md:text-lg font-light leading-relaxed fade-up text-[color:var(--pearl)] drop-shadow-md">
+              <div suppressHydrationWarning className={`max-w-md space-y-8 pb-4 transition-opacity duration-1000 ${showSplash ? 'opacity-0' : 'opacity-100'}`}>
+                <p className="text-base md:text-xl font-light leading-loose fade-up text-[color:var(--pearl)] drop-shadow-md">
                   Content & marketing associate building brand worlds through words, visuals, and quiet strategy.
                 </p>
-                <div className="flex justify-between font-mono text-[9px] uppercase tracking-[0.2em] border-t border-[color:var(--pearl)]/20 pt-4 fade-up text-[color:var(--pearl)]/80">
+                
+                <div className="fade-up">
+                  <a href="#sections" className="inline-flex items-center justify-center bg-[color:var(--cherry)] text-[color:var(--pearl)] px-8 py-4 rounded-full font-mono text-[10px] uppercase tracking-[0.2em] transition-all hover:bg-[color:var(--cherry-deep)] hover:scale-105 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[color:var(--cherry)] focus-visible:ring-offset-[color:var(--obsidian)] w-full md:w-auto">
+                    Explore My Work
+                  </a>
+                </div>
+
+                <div className="flex justify-between font-mono text-[9px] uppercase tracking-[0.2em] border-t border-[color:var(--pearl)]/30 pt-6 fade-up text-[color:var(--pearl)]">
                   <span>Vol. 01 / 2026</span>
                   <span>Delhi NCR</span>
                 </div>
@@ -403,12 +428,12 @@ function Index() {
             <span className="w-1.5 h-1.5 rounded-full bg-[color:var(--cherry)]" />
             About Tamanna
           </div>
-          <h2 className="font-display text-2xl sm:text-4xl xl:text-5xl leading-[1.05] text-[color:var(--obsidian)] mb-2 xl:mb-8">
+          <h2 className="font-display text-3xl sm:text-4xl xl:text-5xl leading-[1.1] text-[color:var(--obsidian)] mb-4 xl:mb-8 font-medium">
             <div>It's not just a Story,</div>
             <div>it's a <span className="italic text-[color:var(--cherry)]">journey.</span></div>
           </h2>
-          <div className="space-y-1.5 sm:space-y-4 text-[11px] sm:text-sm leading-[1.4] xl:leading-relaxed opacity-80 font-light relative px-2 xl:px-0">
-            <div className="absolute -left-6 top-0 bottom-0 w-px bg-gradient-to-b from-[color:var(--cherry)] to-transparent opacity-30 hidden md:block"></div>
+          <div className="space-y-4 sm:space-y-6 text-sm sm:text-base leading-loose opacity-90 font-light relative px-2 xl:px-0 text-[color:var(--obsidian)]">
+            <div className="absolute -left-6 top-0 bottom-0 w-px bg-gradient-to-b from-[color:var(--cherry)] to-transparent opacity-50 hidden md:block"></div>
             <p>
               My name is Tamanna Khan, I am based in Delhi NCR. I freshly graduated from Lady Irwin College, University of Delhi with a Bachelors in Science in Home Science (major) and Psychology (minor).
             </p>
@@ -565,22 +590,28 @@ function Index() {
             Building Content that <span className="italic text-[color:var(--cherry)]">Matters!</span>
           </h2>
           
-          <p className="mt-8 text-sm md:text-lg text-[color:var(--pearl)]/70 leading-relaxed font-light max-w-xl fade-up">
+          <p className="mt-8 text-base md:text-lg lg:text-xl text-[color:var(--pearl)] leading-loose font-light max-w-xl fade-up opacity-95">
             I don’t just create content—I craft compelling brand stories that connect with audiences and leave a lasting impact. I develop creative marketing strategies that help brands and businesses stand out, increase their visibility, and build a memorable presence. By blending storytelling with original ideas, I transform concepts into engaging campaigns that capture attention and drive meaningful engagement.
           </p>
           
-          <div className="flex flex-wrap justify-center xl:justify-start gap-8 md:gap-16 mt-12 fade-up">
+          <div className="mt-10 fade-up w-full sm:w-auto">
+            <a href="#contact" className="inline-flex items-center justify-center bg-[color:var(--cherry)] text-[color:var(--pearl)] px-8 py-4 rounded-full font-mono text-[10px] uppercase tracking-[0.2em] transition-all hover:bg-[color:var(--cherry-deep)] hover:scale-105 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--cherry)] focus-visible:ring-offset-2 focus-visible:ring-offset-[color:var(--obsidian)] w-full sm:w-auto">
+              Let's Talk
+            </a>
+          </div>
+
+          <div className="flex flex-wrap justify-center xl:justify-start gap-8 md:gap-16 mt-16 fade-up">
             <div>
               <dt className="font-display text-4xl md:text-5xl text-[color:var(--cherry)]">7</dt>
-              <dd className="font-mono text-[10px] uppercase tracking-[0.25em] opacity-70 mt-2">Organisations</dd>
+              <dd className="font-mono text-[10px] uppercase tracking-[0.25em] opacity-80 mt-2 text-[color:var(--sand)]">Organisations</dd>
             </div>
             <div>
               <dt className="font-display text-4xl md:text-5xl text-[color:var(--cherry)]">40</dt>
-              <dd className="font-mono text-[10px] uppercase tracking-[0.25em] opacity-70 mt-2">Poems</dd>
+              <dd className="font-mono text-[10px] uppercase tracking-[0.25em] opacity-80 mt-2 text-[color:var(--sand)]">Poems</dd>
             </div>
             <div>
               <dt className="font-display text-4xl md:text-5xl text-[color:var(--cherry)]">1500+</dt>
-              <dd className="font-mono text-[10px] uppercase tracking-[0.25em] opacity-70 mt-2">Words/Article</dd>
+              <dd className="font-mono text-[10px] uppercase tracking-[0.25em] opacity-80 mt-2 text-[color:var(--sand)]">Words/Article</dd>
             </div>
           </div>
           </div>
@@ -600,7 +631,7 @@ function SectionCard({ n, to, title, body, img, className = "" }: { n: string; t
   const props = isHash ? { href: to } : { to };
   
   return (
-    <Component {...props as any} className={`group relative p-10 md:p-16 w-full h-full flex flex-col justify-between overflow-hidden bg-[color:var(--obsidian)] shadow-2xl ${className}`}>
+    <Component {...props as any} className={`group relative p-8 md:p-16 w-full h-full flex flex-col justify-between overflow-hidden bg-[color:var(--obsidian)] shadow-2xl focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[color:var(--cherry)] focus-visible:ring-offset-4 focus-visible:ring-offset-transparent ${className}`}>
       <div className="absolute inset-0 bg-[color:var(--cherry)] transform scale-y-0 origin-bottom transition-transform duration-700 ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:scale-y-100 z-0" />
       {img && (
         <img 
@@ -611,13 +642,13 @@ function SectionCard({ n, to, title, body, img, className = "" }: { n: string; t
       )}
       
       <div className="relative z-10 flex items-start justify-between text-[color:var(--pearl)] group-hover:text-[color:var(--pearl)] transition-colors duration-500">
-        <span className="font-mono text-xs opacity-70">{n} /</span>
-        <span className="font-mono text-[10px] uppercase tracking-[0.2em] opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500">Explore ↗</span>
+        <span className="font-mono text-xs opacity-90">{n} /</span>
+        <span className="font-mono text-[10px] uppercase tracking-[0.2em] opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 font-bold bg-[color:var(--pearl)] text-[color:var(--cherry)] px-3 py-1.5 rounded-full">Explore ↗</span>
       </div>
       
       <div className="relative z-10 space-y-4 text-[color:var(--pearl)] group-hover:text-[color:var(--pearl)] transition-colors duration-500">
-        <h3 className="font-display text-5xl md:text-7xl leading-[0.9] tracking-tighter">{title}</h3>
-        <p className="text-sm md:text-base opacity-70 max-w-sm leading-relaxed font-light">{body}</p>
+        <h3 className="font-display text-4xl md:text-7xl leading-[0.9] tracking-tighter">{title}</h3>
+        <p className="text-sm md:text-lg opacity-90 max-w-sm leading-loose font-light">{body}</p>
       </div>
     </Component>
   );

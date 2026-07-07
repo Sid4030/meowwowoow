@@ -59,20 +59,20 @@ export function Footer() {
         
         <div className="md:col-span-5 space-y-12 font-mono text-xs uppercase tracking-[0.2em] fade-up relative z-20 md:text-right flex flex-col md:items-end">
           <div>
-            <div className="opacity-50 mb-2">Email</div>
-            <a href={`mailto:${EMAIL}`} className="hover:text-[color:var(--cherry)] transition-colors break-all">
+            <div className="opacity-80 mb-2 font-bold">Email</div>
+            <a href={`mailto:${EMAIL}`} className="hover:text-[color:var(--cherry)] transition-colors break-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--cherry)] focus-visible:ring-offset-4 focus-visible:ring-offset-[color:var(--sand)] rounded-sm">
               {EMAIL}
             </a>
           </div>
           <div>
-            <div className="opacity-50 mb-2">Socials</div>
+            <div className="opacity-80 mb-2 font-bold">Socials</div>
             <div className="flex flex-col gap-2 md:items-end">
-              <a href={INSTAGRAM} target="_blank" rel="noopener noreferrer" className="hover:text-[color:var(--cherry)] transition-colors">Instagram ↗</a>
-              <a href={LINKEDIN} target="_blank" rel="noopener noreferrer" className="hover:text-[color:var(--cherry)] transition-colors">LinkedIn ↗</a>
+              <a href={INSTAGRAM} target="_blank" rel="noopener noreferrer" className="hover:text-[color:var(--cherry)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--cherry)] focus-visible:ring-offset-4 focus-visible:ring-offset-[color:var(--sand)] rounded-sm">Instagram ↗</a>
+              <a href={LINKEDIN} target="_blank" rel="noopener noreferrer" className="hover:text-[color:var(--cherry)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--cherry)] focus-visible:ring-offset-4 focus-visible:ring-offset-[color:var(--sand)] rounded-sm">LinkedIn ↗</a>
             </div>
           </div>
           <div>
-            <div className="opacity-50 mb-2">Location</div>
+            <div className="opacity-80 mb-2 font-bold">Location</div>
             <div>Delhi NCR, India</div>
           </div>
         </div>
@@ -105,7 +105,7 @@ export function Footer() {
           href="https://www.linkedin.com/in/siddhant-choudhary-635244224/" 
           target="_blank" 
           rel="noopener noreferrer"
-          className="hover:text-[color:var(--cherry)] transition-colors duration-300 underline underline-offset-4 decoration-[color:var(--cherry)]/30 hover:decoration-[color:var(--cherry)]"
+          className="hover:text-[color:var(--cherry)] transition-colors duration-300 underline underline-offset-4 decoration-[color:var(--cherry)]/30 hover:decoration-[color:var(--cherry)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--cherry)] focus-visible:ring-offset-4 focus-visible:ring-offset-[color:var(--sand)] rounded-sm"
         >
           Designed by Siddhant Choudhary
         </a>
